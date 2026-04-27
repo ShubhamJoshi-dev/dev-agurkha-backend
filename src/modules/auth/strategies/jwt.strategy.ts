@@ -4,10 +4,12 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../users/users.service';
 import { TokenBlocklistService } from '../../../common/blocklist/token-blocklist.service';
+import { Role } from '../../users/entities/user.entity';
 
 interface JwtPayload {
   sub: string;
   email: string;
+  role: Role;
   jti: string;
 }
 
@@ -31,8 +33,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     const user = await this.usersService.findByEmail(payload.email);
+
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User no longer exists');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account has been deactivated');
+    }
+
+    // Guard against a tampered role claim in the token
+    if (user.role !== payload.role) {
+      throw new UnauthorizedException('Token role mismatch');
     }
 
     const { password: _password, ...safeUser } = user;

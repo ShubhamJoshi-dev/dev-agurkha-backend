@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../entities/user.entity';
+import { Role } from '../../users/entities/user.entity';
 
-export class UserResponseDto {
+export class AdminResponseDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   id: string;
 
-  @ApiProperty({ example: 'john@example.com' })
+  @ApiProperty({ example: 'admin@example.com' })
   email: string;
 
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: 'Admin User' })
   name: string;
 
-  @ApiProperty({ enum: Role, example: Role.USER })
+  @ApiProperty({ enum: Role, example: Role.ADMIN })
   role: Role;
 
   @ApiProperty({ example: true })
