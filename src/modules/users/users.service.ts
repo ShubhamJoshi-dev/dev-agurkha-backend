@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { User } from './entities/user.entity';
+import { User, Role } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { BCRYPT_SALT_ROUNDS } from '../../common/constants/app.constants';
@@ -35,6 +35,7 @@ export class UsersService {
   async create(dto: CreateUserDto): Promise<SafeUser> {
     const user = this.userRepository.create({
       ...dto,
+      role: Role.USER,
       password: await bcrypt.hash(dto.password, BCRYPT_SALT_ROUNDS),
     });
 
@@ -47,7 +48,7 @@ export class UsersService {
   }
 
   async findAll(): Promise<SafeUser[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ where: { role: Role.USER } });
   }
 
   async findOne(id: string): Promise<SafeUser> {

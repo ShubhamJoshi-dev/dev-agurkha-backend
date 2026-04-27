@@ -8,13 +8,13 @@ import {
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
-  @ApiProperty({ example: 'john@example.com' })
+export class CreateAdminDto {
+  @ApiProperty({ example: 'admin@example.com' })
   @IsEmail()
   @Transform(({ value }: { value: string }) => value.toLowerCase().trim())
   email: string;
 
-  @ApiProperty({ example: 'John Doe', maxLength: 100 })
+  @ApiProperty({ example: 'Admin User', maxLength: 100 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
