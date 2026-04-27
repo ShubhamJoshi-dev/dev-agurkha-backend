@@ -81,4 +81,23 @@ export class UsersService {
       throw new NotFoundException(`User #${id} not found`);
     }
   }
+
+  async createSuperAdmin(dto: CreateUserDto): Promise<SafeUser> {
+    const user = this.userRepository.create({
+      ...dto,
+      role: Role.SUPER_ADMIN,
+      password: await bcrypt.hash(dto.password, BCRYPT_SALT_ROUNDS),
+    });
+
+    return this.userRepository.save(user).then(toSafeUser).catch((error) => {
+      if (isUniqueViolation(error)) {
+        throw new ConflictException('User with this email already exists');
+      }
+      throw error;
+    });
+  }
+
+  async superAdminExists(): Promise<boolean> {
+    return this.userRepository.existsBy({ role: Role.SUPER_ADMIN });
+  }
 }
