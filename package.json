@@ -12,7 +12,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand --forceExit",
+    "test:e2e:watch": "jest --config ./test/jest-e2e.json --runInBand --watch",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d data-source.ts",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d data-source.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d data-source.ts"
@@ -46,6 +47,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/multer": "^2.1.0",
     "@types/node": "^20.3.1",
     "@types/passport-jwt": "^3.0.9",
     "@types/pg": "^8.20.0",

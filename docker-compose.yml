@@ -17,24 +17,41 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: agurkha_app
-    restart: unless-stopped
-    ports:
-      - '${APP_PORT:-3000}:3000'
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: agurkha_app
+  #   restart: unless-stopped
+  #   ports:
+  #     - '${APP_PORT:-3000}:3000'
+  #   environment:
+  #     NODE_ENV: production
+  #     PORT: 3000
+  #     DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-agurkha_db}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #     JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+  #     CORS_ORIGIN: ${CORS_ORIGIN:-*}
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: agurkha_postgres_test
     environment:
-      NODE_ENV: production
-      PORT: 3000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-agurkha_db}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      CORS_ORIGIN: ${CORS_ORIGIN:-*}
-    depends_on:
-      postgres:
-        condition: service_healthy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: agurkha_test
+    ports:
+      - '5435:5432'
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   postgres_data:

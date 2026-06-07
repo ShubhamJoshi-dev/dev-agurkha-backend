@@ -18,6 +18,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
+import { SignInDto } from './dto/signin.dto';
 import { SetupSuperAdminDto } from './dto/setup-super-admin.dto';
 import { AuthResponseDto, MessageResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from '../users/dto/user-response.dto';
@@ -72,6 +73,25 @@ export class AuthController {
   logout(@CurrentUser() user: AuthenticatedUser) {
     this.authService.logout(user.jti);
     return { message: 'Logged out successfully' };
+  }
+
+  @Post('signin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Sign in (alias for login, accepts username or email)' })
+  @ApiOkResponse({ type: AuthResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  signin(@Body() dto: SignInDto) {
+    return this.authService.login({ email: dto.username, password: dto.password });
+  }
+
+  @Post('signout')
+  @HttpCode(HttpStatus.OK)
+  @Auth()
+  @ApiOperation({ summary: 'Sign out (alias for logout)' })
+  @ApiOkResponse({ type: MessageResponseDto })
+  signout(@CurrentUser() user: AuthenticatedUser) {
+    this.authService.logout(user.jti);
+    return { message: 'Signed out successfully' };
   }
 
   @Post('setup')
