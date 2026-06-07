@@ -3,6 +3,8 @@ import { ValidationPipe, VersioningType, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { join } from 'path';
+import * as express from 'express';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
@@ -25,6 +27,9 @@ async function bootstrap() {
   const nodeEnv = configService.get<string>('nodeEnv');
 
   app.use(helmet({ contentSecurityPolicy: nodeEnv === 'production' }));
+
+  // Serve uploaded media files
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   app.enableCors({
     origin: configService.get<string>('cors.origin', '*'),
