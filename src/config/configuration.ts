@@ -11,4 +11,7 @@ export default () => ({
   cors: {
     origin: process.env.CORS_ORIGIN || '*',
   },
+  setup: {
+    secret: process.env.SETUP_SECRET,
+  },
 });

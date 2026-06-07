@@ -14,6 +14,9 @@ export class UserResponseDto {
   @ApiProperty({ enum: Role, example: Role.USER })
   role: Role;
 
+  @ApiProperty({ example: true })
+  isActive: boolean;
+
   @ApiProperty({ example: '2026-01-01T00:00:00.000Z' })
   createdAt: Date;
 

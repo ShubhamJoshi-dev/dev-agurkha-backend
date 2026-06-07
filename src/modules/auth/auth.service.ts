@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
@@ -31,8 +35,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account has been deactivated');
+    }
+
     const jti = randomUUID();
-    const payload = { sub: user.id, email: user.email, jti };
+    const payload = { sub: user.id, email: user.email, role: user.role, jti };
 
     return {
       accessToken: this.jwtService.sign(payload),
@@ -47,5 +55,18 @@ export class AuthService {
 
   logout(jti: string) {
     this.blocklist.add(jti);
+  }
+
+  async setupSuperAdmin(dto: CreateUserDto, providedSecret: string, configSecret: string | undefined) {
+    if (!configSecret || providedSecret !== configSecret) {
+      throw new UnauthorizedException('Invalid setup secret');
+    }
+
+    const alreadyExists = await this.usersService.superAdminExists();
+    if (alreadyExists) {
+      throw new ConflictException('A super admin already exists');
+    }
+
+    return this.usersService.createSuperAdmin(dto);
   }
 }

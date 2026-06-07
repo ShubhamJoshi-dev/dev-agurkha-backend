@@ -7,8 +7,9 @@ import {
 } from 'typeorm';
 
 export enum Role {
-  USER = 'USER',
+  SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
+  USER = 'USER',
 }
 
 @Entity('users')
@@ -27,6 +28,9 @@ export class User {
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;
+
+  @Column({ default: true })
+  isActive: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
