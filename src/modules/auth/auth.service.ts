@@ -9,6 +9,7 @@ import { randomUUID } from 'crypto';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { TokenBlocklistService } from '../../common/blocklist/token-blocklist.service';
 import { BCRYPT_SALT_ROUNDS } from '../../common/constants/app.constants';
 
@@ -55,6 +56,16 @@ export class AuthService {
 
   logout(jti: string) {
     this.blocklist.add(jti);
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const patch: Record<string, unknown> = {};
+    if (dto.name !== undefined) patch.name = dto.name;
+    if (dto.email !== undefined) patch.email = dto.email;
+    if (dto.password !== undefined) {
+      patch.password = await bcrypt.hash(dto.password, BCRYPT_SALT_ROUNDS);
+    }
+    return this.usersService.updateRaw(userId, patch);
   }
 
   async setupSuperAdmin(dto: CreateUserDto, providedSecret: string, configSecret: string | undefined) {
