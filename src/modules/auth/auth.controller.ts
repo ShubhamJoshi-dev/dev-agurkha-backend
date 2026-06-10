@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Body,
   HttpCode,
   HttpStatus,
@@ -19,6 +20,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { SignInDto } from './dto/signin.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { SetupSuperAdminDto } from './dto/setup-super-admin.dto';
 import { AuthResponseDto, MessageResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from '../users/dto/user-response.dto';
@@ -63,6 +65,14 @@ export class AuthController {
   @ApiOkResponse({ type: UserResponseDto })
   me(@CurrentUser() user: AuthenticatedUser) {
     return this.usersService.findOne(user.id);
+  }
+
+  @Patch('me')
+  @Auth()
+  @ApiOperation({ summary: 'Update own profile (name, email, password)' })
+  @ApiOkResponse({ type: UserResponseDto })
+  updateMe(@CurrentUser() user: AuthenticatedUser, @Body() dto: UpdateProfileDto) {
+    return this.authService.updateProfile(user.id, dto);
   }
 
   @Post('logout')

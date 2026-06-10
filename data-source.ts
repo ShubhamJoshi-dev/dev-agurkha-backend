@@ -25,9 +25,13 @@ import { CreateCmsEntities20260607000000 } from './src/database/migrations/20260
 
 config();
 
+const dbUrl = process.env.DATABASE_URL ?? '';
+const isRemote = !dbUrl.includes('localhost') && !dbUrl.includes('127.0.0.1');
+
 export default new DataSource({
   type: 'postgres',
-  url: process.env.DATABASE_URL,
+  url: dbUrl,
+  ssl: isRemote ? { rejectUnauthorized: false } : false,
   entities: [
     User,
     Service,

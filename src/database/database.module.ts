@@ -7,19 +7,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres' as const,
-        url: config.get<string>('database.url'),
-        autoLoadEntities: true,
-        synchronize: false,
-        logging: config.get<string>('nodeEnv') === 'development',
-        // Pool settings — tune via env if needed
-        extra: {
-          max: parseInt(process.env.DB_POOL_MAX ?? '10', 10),
-          idleTimeoutMillis: 30_000,
-          connectionTimeoutMillis: 5_000,
-        },
-      }),
+      useFactory: (cfg: ConfigService) => {
+        const url = cfg.get<string>('database.url') ?? '';
+        const isRemote = !url.includes('localhost') && !url.includes('127.0.0.1');
+        return {
+          type: 'postgres' as const,
+          url,
+          ssl: isRemote ? { rejectUnauthorized: false } : false,
+          autoLoadEntities: true,
+          synchronize: false,
+          logging: cfg.get<string>('nodeEnv') === 'development',
+          extra: {
+            max: parseInt(process.env.DB_POOL_MAX ?? '10', 10),
+            idleTimeoutMillis: 30_000,
+            connectionTimeoutMillis: 5_000,
+          },
+        };
+      },
     }),
   ],
 })

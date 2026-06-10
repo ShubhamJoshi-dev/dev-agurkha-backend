@@ -75,6 +75,20 @@ export class UsersService {
     return this.userRepository.save(user).then(toSafeUser);
   }
 
+  /** Used by AuthService.updateProfile — accepts pre-hashed password. */
+  async updateRaw(id: string, fields: Record<string, unknown>): Promise<SafeUser> {
+    const user = await this.userRepository.preload({ id, ...(fields as Partial<User>) });
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+    return this.userRepository.save(user).then(toSafeUser).catch((error) => {
+      if (isUniqueViolation(error)) {
+        throw new ConflictException('A user with that email already exists');
+      }
+      throw error;
+    });
+  }
+
   async remove(id: string): Promise<void> {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {

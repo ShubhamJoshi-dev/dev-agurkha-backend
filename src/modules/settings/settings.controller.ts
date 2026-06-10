@@ -23,6 +23,30 @@ export class SettingsController {
     return this.svc.get('homepage');
   }
 
+  @Get('site')
+  @Auth(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get site settings (admin)' })
+  @ApiOkResponse({ description: 'Site settings object' })
+  getSite() {
+    return this.svc.get('site');
+  }
+
+  @Get('scripts')
+  @Auth(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get script injection settings (admin)' })
+  @ApiOkResponse({ description: 'Scripts settings object' })
+  getScripts() {
+    return this.svc.get('scripts');
+  }
+
+  @Get('social')
+  @Auth(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get social link settings (admin)' })
+  @ApiOkResponse({ description: 'Social settings object' })
+  getSocial() {
+    return this.svc.get('social');
+  }
+
   @Patch('general')
   @Auth(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: 'Update general settings (admin)' })
