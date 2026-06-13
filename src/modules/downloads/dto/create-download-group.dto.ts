@@ -4,10 +4,10 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   Min,
   ValidateNested,
 } from 'class-validator';
+import { IsUrlOrPath } from '../../../common/validators/is-url-or-path.validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -18,7 +18,7 @@ export class DownloadFileDto {
   label: string;
 
   @ApiProperty()
-  @IsUrl()
+  @IsUrlOrPath()
   url: string;
 
   @ApiPropertyOptional()

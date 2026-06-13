@@ -1,4 +1,5 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString, IsUrl, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
+import { IsUrlOrPath } from '../../../common/validators/is-url-or-path.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateAffiliateDto {
@@ -9,12 +10,12 @@ export class CreateAffiliateDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   logoUrl?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   websiteUrl?: string;
 
   @ApiPropertyOptional({ default: 0 })

@@ -19,4 +19,11 @@ export class UpdateProfileDto {
   @MinLength(8)
   @MaxLength(128)
   password?: string;
+
+  @ApiPropertyOptional({
+    description: 'Required when changing `password` — the current password, verified before the change.',
+  })
+  @IsOptional()
+  @IsString()
+  currentPassword?: string;
 }

@@ -75,7 +75,14 @@ export class MediaController {
   })
   upload(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
     if (!file) throw new BadRequestException('No file uploaded');
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    // Honour the proxy's forwarded protocol (Render/NGINX terminate TLS), so
+    // media URLs are https in production instead of http (mixed content) —
+    // see docs/BACKEND_NEEDS.md #3.
+    const forwardedProto = (req.headers['x-forwarded-proto'] as string)
+      ?.split(',')[0]
+      ?.trim();
+    const proto = forwardedProto || req.protocol;
+    const baseUrl = `${proto}://${req.get('host')}`;
     return this.svc.create(file, baseUrl);
   }
 

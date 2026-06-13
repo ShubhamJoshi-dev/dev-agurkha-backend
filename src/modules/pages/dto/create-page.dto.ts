@@ -4,8 +4,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
-} from 'class-validator';
+  } from 'class-validator';
+import { IsUrlOrPath } from '../../../common/validators/is-url-or-path.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PageStatus } from '../entities/page.entity';
 
@@ -32,7 +32,7 @@ export class CreatePageDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   featuredImageUrl?: string;
 
   @ApiProperty({ enum: PageStatus, default: PageStatus.DRAFT })
@@ -61,7 +61,7 @@ export class CreatePageDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   seoOgImage?: string;
 
   @ApiPropertyOptional()

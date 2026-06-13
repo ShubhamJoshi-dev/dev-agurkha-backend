@@ -5,3 +5,6 @@ coverage/
 *.log
 .DS_Store
 CLAUDE.md
+
+# Uploaded media files (stored on local disk; ephemeral in prod — see docs/BACKEND_NEEDS.md #0)
+uploads/
