@@ -3,8 +3,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
-} from 'class-validator';
+  } from 'class-validator';
+import { IsUrlOrPath } from '../../../common/validators/is-url-or-path.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PublishStatus } from '../entities/news-post.entity';
 
@@ -36,7 +36,7 @@ export class CreateNewsDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   imageUrl?: string;
 
   @ApiProperty()
@@ -65,6 +65,6 @@ export class CreateNewsDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   seoOgImage?: string;
 }

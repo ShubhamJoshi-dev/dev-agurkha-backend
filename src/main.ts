@@ -26,10 +26,26 @@ async function bootstrap() {
   const port = configService.get<number>('port', 3000);
   const nodeEnv = configService.get<string>('nodeEnv');
 
-  app.use(helmet({ contentSecurityPolicy: nodeEnv === 'production' }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: nodeEnv === 'production',
+      // Uploaded media is embedded cross-origin by the admin UI / public site
+      // (different port/host than the API). The Helmet default of
+      // `same-origin` makes browsers block those <img> embeds, so relax it.
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
 
-  // Serve uploaded media files
-  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+  // Serve uploaded media files. Add an explicit CORP header on the static
+  // responses too, so embedding the files cross-origin always works.
+  app.use(
+    '/uploads',
+    (_req: express.Request, res: express.Response, next: express.NextFunction) => {
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      next();
+    },
+    express.static(join(process.cwd(), 'uploads')),
+  );
 
   app.enableCors({
     origin: configService.get<string>('cors.origin', '*'),

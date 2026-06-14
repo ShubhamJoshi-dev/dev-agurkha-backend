@@ -32,18 +32,20 @@ export class SettingsController {
   }
 
   @Get('scripts')
-  @Auth(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Get script injection settings (admin)' })
+  @ApiOperation({ summary: 'Get script injection settings (public)' })
   @ApiOkResponse({ description: 'Scripts settings object' })
   getScripts() {
+    // Public: drives analytics + custom head/body script injection on the
+    // public site. PATCH stays admin-protected.
     return this.svc.get('scripts');
   }
 
   @Get('social')
-  @Auth(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Get social link settings (admin)' })
+  @ApiOperation({ summary: 'Get social link settings (public)' })
   @ApiOkResponse({ description: 'Social settings object' })
   getSocial() {
+    // Public: social links are shown in the public site footer. Only the PATCH
+    // (update) stays admin-protected.
     return this.svc.get('social');
   }
 

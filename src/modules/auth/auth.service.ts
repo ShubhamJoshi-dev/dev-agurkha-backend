@@ -63,6 +63,16 @@ export class AuthService {
     if (dto.name !== undefined) patch.name = dto.name;
     if (dto.email !== undefined) patch.email = dto.email;
     if (dto.password !== undefined) {
+      // Verify the current password before allowing a change.
+      const current = await this.usersService.findOne(userId);
+      const withHash = await this.usersService.findByEmail(current.email);
+      const valid =
+        !!withHash?.password &&
+        !!dto.currentPassword &&
+        (await bcrypt.compare(dto.currentPassword, withHash.password));
+      if (!valid) {
+        throw new UnauthorizedException('Current password is incorrect');
+      }
       patch.password = await bcrypt.hash(dto.password, BCRYPT_SALT_ROUNDS);
     }
     return this.usersService.updateRaw(userId, patch);

@@ -4,9 +4,9 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   Min,
 } from 'class-validator';
+import { IsUrlOrPath } from '../../../common/validators/is-url-or-path.validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateServiceDto {
@@ -37,7 +37,7 @@ export class CreateServiceDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   imageUrl?: string;
 
   @ApiPropertyOptional({ default: 0 })

@@ -3,15 +3,15 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   ValidateNested,
 } from 'class-validator';
+import { IsUrlOrPath } from '../../../common/validators/is-url-or-path.validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class GalleryImageDto {
   @ApiProperty()
-  @IsUrl()
+  @IsUrlOrPath()
   url: string;
 
   @ApiPropertyOptional()
@@ -33,7 +33,7 @@ export class CreateGalleryDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
+  @IsUrlOrPath()
   coverImageUrl?: string;
 
   @ApiPropertyOptional()
